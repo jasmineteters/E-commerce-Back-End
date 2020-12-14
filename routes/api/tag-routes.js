@@ -6,10 +6,16 @@ const { Tag, Product, ProductTag } = require("../../models");
 router.get("/", async (req, res) => {
   // find all tags
   // be sure to include its associated Product data
-
-  const tags = await Tag.findAll({ include: Product });
-  res.json(tags);
-  console.log(tags);
+  try {
+    const tags = await Tag.findAll({ include: Product });
+    if (!tags) {
+      res.status(404).json({ message: "Wrong Route" });
+      return;
+    }
+    res.status(200).json(tags);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 router.get("/:id", async (req, res) => {
